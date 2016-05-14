@@ -8,8 +8,8 @@ namespace ExplorerApplication.Models
     public class FileModel
     {
         public string Name { get; set; }
-        public string Date { get; set; }
-        public int Size { get; set; }
-        public string type { get; set; }        
+        public DateTime Date { get; set; }
+        public long Size { get; set; }
+        public string Type { get; set; }        
     }
 }

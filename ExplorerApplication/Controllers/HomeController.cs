@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.IO;
+using ExplorerApplication.Models;
 
 namespace ExplorerApplication.Controllers
 {
@@ -11,9 +12,8 @@ namespace ExplorerApplication.Controllers
     {
         public ActionResult Index()
         {
-            DriveInfo[] drivers = DriveInfo.GetDrives();
-            ViewBag.test = drivers;
-            return View();
+            DirectoryModel model = new DirectoryModel(@"C:\"); 
+            return View(model);
         }
 
         public ActionResult About()
