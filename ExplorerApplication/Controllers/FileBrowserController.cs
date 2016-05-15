@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.IO;
 using ExplorerApplication.Models;
@@ -14,7 +13,7 @@ namespace ExplorerApplication.Controllers
         /// <summary>
         /// This method displays all files and directorys. 
         /// </summary>
-        /// <param name="path">Directory's path</param>
+        /// <param name="path">Optional parameter directory's path</param>
         /// <returns>View with model and view's name</returns>
         public ActionResult Index(string path)
         {
@@ -22,12 +21,12 @@ namespace ExplorerApplication.Controllers
             var fixedDrives = from drive in drives
                               where drive.Type == "Fixed"
                               select drive;
+
             if (String.IsNullOrEmpty(path))
                 path = fixedDrives.First().Name;
             
             ViewBag.path = path;
             DirectoryModel model = this.InitialDirectory(path); 
-
             return View("Index", model);
         }
 
@@ -35,28 +34,24 @@ namespace ExplorerApplication.Controllers
         /// This method creates directory in path.
         /// </summary>
         /// <param name="path">Path for file</param>
-        /// <param name="type"></param>
         /// <param name="name">Name of new file</param>
+        /// <param name="type"></param>
         /// <returns>View with model and view's name</returns>
-        public ActionResult Create(string path, string name)
+        public ActionResult Create(string path, string name, string type)
         {
             if (!String.IsNullOrEmpty(name) && !String.IsNullOrEmpty(path))
-            {                
-                try
-                {
-                    //Directory.CreateDirectory(path +@"\"+name);
-                    Directory.CreateDirectory(System.IO.Path.Combine(path, name));
-                    ViewBag.path = path;
-                    DirectoryModel model = this.InitialDirectory(path);
-                    return View("Index", model);
-                }
-                catch (IOException e) { ViewBag.Massage = e.Message; }
-                catch(Exception e) { ViewBag.Massage = e.Message; }                    
-                    
+            {                                   
+                if(type == "directory")
+                    this.CreateDirectory(path, name);
+                if (type == "file")
+                    this.CreateFile(path, name);               
             }                
             else
                 ViewBag.Massage = "Name or path is empty or null!";
-            return View();
+
+            ViewBag.path = path;
+            DirectoryModel model = this.InitialDirectory(path);
+            return View("Index", model);
         }      
 
         /// <summary>
@@ -105,6 +100,38 @@ namespace ExplorerApplication.Controllers
             }
 
             return drivesList;
-        }    
+        }
+
+        /// <summary>
+        /// This method creates file.
+        /// </summary>
+        /// <param name="path">Path for file</param>
+        /// <param name="name">Name of new file</param>
+        private void CreateFile(string path, string name)
+        {
+            if (!System.IO.File.Exists(Path.Combine(path, name)))
+            {
+                System.IO.File.Create(Path.Combine(path, name));
+            }
+            else
+            {
+                ViewBag.Massage = "File " + name + " alredy exists.";               
+            }
+        }
+
+        /// <summary>
+        /// This creates directory.
+        /// </summary>
+        /// <param name="path">Path for file</param>
+        /// <param name="name">Name of new file</param>      
+        private void CreateDirectory(string path, string name)
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.Combine(path, name));
+            }
+            catch (IOException e) { ViewBag.Massage = e.Message; }
+            catch (Exception e) { ViewBag.Massage = e.Message; }
+        }
     }
 }
