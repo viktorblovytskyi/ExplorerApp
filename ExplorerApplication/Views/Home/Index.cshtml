@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = Model.Name;
 }
-
 <table class="table">
     <tr>
         <th>
@@ -25,7 +24,17 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                
+                @if (item.Type == "directory")
+                {
+                    @Html.ActionLink(item.Name, "Index", new { path = item.FullName })
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.Name)
+                }
+
+
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Size)
@@ -37,11 +46,9 @@
                 @Html.DisplayFor(modelItem => item.Type)
             </td>
             <td></td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
+            @*<td>            
+                @Html.ActionLink("Change Directory", "Index", new { path = item.FullName })
+            </td>*@
         </tr>
     }
 </table>    

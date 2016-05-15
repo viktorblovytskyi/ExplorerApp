@@ -8,12 +8,9 @@ namespace ExplorerApplication.Models
     /// <summary>
     /// This model describes the properties of the file.
     /// </summary>
-    public class FileModel
+    public class DriveModel
     {
         public string Name;
-        public DateTime Date;
-        public long Size;
         public string Type;
-        public string FullName;      
     }
 }
