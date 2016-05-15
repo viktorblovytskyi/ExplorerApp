@@ -6,10 +6,9 @@
 }
 
 <!-- Buttons -->
-
-<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal" onclick="">Create</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="">Create</button>
+<button type="button" class="btn btn-danger" onclick="history.back()">Back</button>
 @ViewBag.Massage
-<br />
 @{  
     //Display all local fixed drives. 
     DriveInfo[] drives = DriveInfo.GetDrives();
@@ -17,7 +16,7 @@
     {
         if(drive.DriveType.ToString() == "Fixed")
         {
-            @Html.ActionLink(drive.Name, "Index", new { path = drive.Name }, new { @class = "btn btn-default", margin = "margin: 50px 50px 50px 50px" })
+            @Html.ActionLink(drive.Name, "Index", new { path = drive.Name }, new { @class = "btn btn-default"})
         }
     }
 }
@@ -31,7 +30,6 @@
             <th>Name</th>
             <th>Size</th>
             <th>Date</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -41,7 +39,7 @@
                 <td>
 
                     @if (item.Type == "directory")
-                {
+                    {
                         @Html.ActionLink(item.Name, "Index", new { path = item.FullName })
                     }
                     else
@@ -51,15 +49,12 @@
                 </td>
                 <td>
                     @if (item.Type != "directory")
-                {
+                    {
                         @Html.DisplayFor(modelItem => item.Size)
                     }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#myModal" onclick="Test()">Change</button>
                 </td>
             </tr>
         }
@@ -79,7 +74,6 @@
             <div class="modal-body">
                 <form id="createForm" action="/FileBrowser/Create" method="get"  class="form-horizontal">
                     <input type="hidden" name="path" value="@ViewBag.path" />
-                    <input type="hidden" name="type" value="directory" />
                     <div class="form-group">
                         <label class="col-xs-3 control-label">Name</label>
                         <div class="col-xs-5">
@@ -87,17 +81,9 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    </div>
-                                           
+                    </div>                                           
                 </form>
             </div>
         </div>
-
     </div>
-</div>  
-
-<script>
-    function Test() {
-        console.log(data);
-    }
-</script>
+</div> 

@@ -10,6 +10,7 @@ namespace ExplorerApplication.Controllers
 {
     public class FileBrowserController : Controller
     {
+
         /// <summary>
         /// This method displays all files and directorys. 
         /// </summary>
@@ -37,29 +38,24 @@ namespace ExplorerApplication.Controllers
         /// <param name="type"></param>
         /// <param name="name">Name of new file</param>
         /// <returns>View with model and view's name</returns>
-        public ActionResult Create(string path, string type, string name)
+        public ActionResult Create(string path, string name)
         {
-            if (!String.IsNullOrEmpty(name))
-            {
-                if(type == "directory")
+            if (!String.IsNullOrEmpty(name) && !String.IsNullOrEmpty(path))
+            {                
+                try
                 {
-                    try
-                    {
-                        Directory.CreateDirectory(path + name);
-                    }
-                    catch (IOException e) { ViewBag.Massage = e.Message; }
-                    catch(Exception e) { ViewBag.Massage = e.Message; }                    
+                    Directory.CreateDirectory(path +@"\"+name);
+                    ViewBag.path = path;
+                    DirectoryModel model = this.InitialDirectory(path);
+                    return View("Index", model);
                 }
-                else
-                {
-                    //TODO: add create file
-                }
+                catch (IOException e) { ViewBag.Massage = e.Message; }
+                catch(Exception e) { ViewBag.Massage = e.Message; }                    
+                    
             }                
             else
-                ViewBag.Massage = "Name is empty or null!";
-
-            DirectoryModel model = this.InitialDirectory(path);
-            return View("Index", model);
+                ViewBag.Massage = "Name or path is empty or null!";
+            return View();
         }      
 
         /// <summary>
@@ -108,11 +104,6 @@ namespace ExplorerApplication.Controllers
             }
 
             return drivesList;
-        }
-        
-
-
-
-
+        }    
     }
 }
