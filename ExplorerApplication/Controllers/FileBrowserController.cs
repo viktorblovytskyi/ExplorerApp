@@ -44,7 +44,8 @@ namespace ExplorerApplication.Controllers
             {                
                 try
                 {
-                    Directory.CreateDirectory(path +@"\"+name);
+                    //Directory.CreateDirectory(path +@"\"+name);
+                    Directory.CreateDirectory(System.IO.Path.Combine(path, name));
                     ViewBag.path = path;
                     DirectoryModel model = this.InitialDirectory(path);
                     return View("Index", model);
