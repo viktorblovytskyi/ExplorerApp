@@ -8,28 +8,59 @@ using ExplorerApplication.Models;
 
 namespace ExplorerApplication.Controllers
 {
-    public class HomeController : Controller
+    public class FileBrowserController : Controller
     {
+        /// <summary>
+        /// This method displays all files and directorys. 
+        /// </summary>
+        /// <param name="path">Directory's path</param>
+        /// <returns>View with model and view's name</returns>
         public ActionResult Index(string path)
         {
-                       
-            if (path == null)
-            {
-                path = @"C:\";
-            }
-            ViewBag.Message = path;
+            List<DriveModel> drives = this.GetDrives();
+            var fixedDrives = from drive in drives
+                              where drive.Type == "Fixed"
+                              select drive;
+            if (String.IsNullOrEmpty(path))
+                path = fixedDrives.First().Name;
+            
+            ViewBag.path = path;
             DirectoryModel model = this.InitialDirectory(path); 
-            return View(model);
+
+            return View("Index", model);
         }
 
-        //public ActionResult Change(string path)
-        //{
-        //    ViewBag.Message = path;
-        //    DirectoryModel model = this.InitialDirectory();
-        //    return View(model);
-        //    //return View();
-        //}
+        /// <summary>
+        /// This method creates directory in path.
+        /// </summary>
+        /// <param name="path">Path for file</param>
+        /// <param name="type"></param>
+        /// <param name="name">Name of new file</param>
+        /// <returns>View with model and view's name</returns>
+        public ActionResult Create(string path, string type, string name)
+        {
+            if (!String.IsNullOrEmpty(name))
+            {
+                if(type == "directory")
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(path + name);
+                    }
+                    catch (IOException e) { ViewBag.Massage = e.Message; }
+                    catch(Exception e) { ViewBag.Massage = e.Message; }                    
+                }
+                else
+                {
+                    //TODO: add create file
+                }
+            }                
+            else
+                ViewBag.Massage = "Name is empty or null!";
 
+            DirectoryModel model = this.InitialDirectory(path);
+            return View("Index", model);
+        }      
 
         /// <summary>
         /// This method get all directorys and files in path and create DirectoryModel's object.
@@ -39,6 +70,7 @@ namespace ExplorerApplication.Controllers
         private DirectoryModel InitialDirectory (string path)
         {
             List<FileModel> files = new List<FileModel>();
+            List<DriveModel> drives = this.GetDrives();
             try
             {
                 if (Directory.Exists(path))
@@ -56,9 +88,9 @@ namespace ExplorerApplication.Controllers
                     return new DirectoryModel() { Name = path, Files = files };
                 }
             }
-            catch (UnauthorizedAccessException) { }
+            catch (UnauthorizedAccessException e ) { ViewBag.Massage = e.Message; }
              
-            return new DirectoryModel() { Name = path, Files = files};
+            return null;
         }
 
         /// <summary>
@@ -69,12 +101,15 @@ namespace ExplorerApplication.Controllers
         {
             List<DriveModel> drivesList = new List<DriveModel>();
             DriveInfo[] drives = DriveInfo.GetDrives();
+         
             foreach (var drive in drives)
             {
                 drivesList.Add(new DriveModel() { Name = drive.Name, Type = drive.DriveType.ToString()});
             }
+
             return drivesList;
         }
+        
 
 
 

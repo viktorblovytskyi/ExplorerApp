@@ -11,7 +11,7 @@ namespace ExplorerApplication.Models
     /// </summary>
     public class DirectoryModel
     {
-        public string Name { get; set; }
-        public List<FileModel> Files { get; set; }        
+        public string Name;
+        public List<FileModel> Files;  
     }
 }
